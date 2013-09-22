@@ -31,7 +31,7 @@ insertion_sort_ull(unsigned long long *data, int n) {
 
 static void
 radixsort_tail_ull(unsigned long long *data, int n, int ix) {
-    if (ix >= sizeof(unsigned long long) * 8)
+    if (ix >= (sizeof(unsigned long long) * 8))
         return;
 
     if (n > CUTOFF) {
@@ -41,6 +41,9 @@ radixsort_tail_ull(unsigned long long *data, int n, int ix) {
 
         memset(counts, 0, sizeof(counts));
         memset(offsets, 0, sizeof(offsets));
+
+        if (ix > (sizeof(unsigned long long) - 1) * 8)
+            ix = (sizeof(unsigned long long) - 1) * 8;
 
         for (i = 0; i < n; i++) {
             unsigned long long d = data[i];
@@ -116,7 +119,7 @@ logixsort_ull(unsigned long long *data, unsigned int n) {
     offset = 0;
     for (i = LBUCKETS; i > 0; ) {
         i--;
-        radixsort_tail_ull(data + offset, offsets[i] - offset, (i / 8) * 8);
+        radixsort_tail_ull(data + offset, offsets[i] - offset, i);
         offset = offsets[i];
     }
 }
