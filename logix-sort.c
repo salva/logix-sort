@@ -82,7 +82,7 @@ radixsort_tail_ull(unsigned long long *data, int n, int ix) {
 static int
 clz_ull(unsigned long long ull) {
     // return (ull ? __builtin_clzll(ull) : (sizeof(ull) * 8));
-    return __builtin_clzll(ull|1);
+    return __builtin_clzll(ull|128);
 }
 
 
@@ -116,11 +116,12 @@ logixsort_ull(unsigned long long *data, unsigned int n) {
         }
     }
 
-    offset = 0;
-    for (i = LBUCKETS; i > 0; ) {
-        i--;
-        radixsort_tail_ull(data + offset, offsets[i] - offset, i);
-        offset = offsets[i];
+    offset = offsets[sizeof(unsigned long long) * 8 - 7];
+    radixsort_tail_ull(data, offset, sizeof(unsigned long long) * 8 - 7);
+
+    for (i = LBUCKETS - 7; i > 0; i--) {
+        radixsort_tail_ull(data + offset, offsets[i - 1] - offset, i);
+        offset = offsets[i - 1];
     }
 }
 
