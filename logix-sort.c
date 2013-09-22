@@ -67,7 +67,7 @@ radixsort_tail_ull(unsigned long long *data, int n, int ix) {
 
         offset = 0;
         for (i = 0; i < 256; i++) {
-            radixsort_tail_ull(data + offset, offsets[i] - offset, ix + 8);
+            radixsort_tail_ull(data + offset, offsets[i] - offset, ix + 1);
             offset = offsets[i];
         }
     }
