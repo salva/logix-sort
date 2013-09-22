@@ -116,6 +116,16 @@ logixsort_ull(unsigned long long *data, unsigned int n) {
         }
     }
 
+    offset = 0;
+    for (i = LBUCKETS; i > 0; i--) {
+        int j;
+        fprintf(stderr, "bucket %d:\n", i);
+        for (j = offset; j < offsets[i-1]; j++) {
+            fprintf(stderr, "    %0llx (%lld)\n", data[j], data[j]);
+        }
+        offset = offsets[i - 1];
+    }
+
     offset = offsets[sizeof(unsigned long long) * 8 - 7];
     radixsort_tail_ull(data, offset, sizeof(unsigned long long) * 8 - 7);
 
