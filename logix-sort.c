@@ -31,7 +31,7 @@ insertion_sort_ull(unsigned long long *data, int n) {
 
 static void
 radixsort_tail_ull(unsigned long long *data, int n, int ix) {
-    if (ix >= sizeof(unsigned long long))
+    if (ix >= sizeof(unsigned long long) * 8)
         return;
 
     if (n > CUTOFF) {
@@ -44,7 +44,7 @@ radixsort_tail_ull(unsigned long long *data, int n, int ix) {
 
         for (i = 0; i < n; i++) {
             unsigned long long d = data[i];
-            unsigned char c = (d >> ((sizeof(unsigned long long) - 1 - ix) * 8)) & 255;
+            unsigned char c = (d >> ((sizeof(unsigned long long) - 1) * 8 - ix)) & 255;
             counts[c]++;
         }
         
@@ -57,7 +57,7 @@ radixsort_tail_ull(unsigned long long *data, int n, int ix) {
             while (counts[i]) {
                 int src_offset = offsets[i] - counts[i];
                 unsigned long long src = data[src_offset];
-                unsigned char target_bucket = (src >> ((sizeof(unsigned long long) - 1 - ix) * 8)) & 255;
+                unsigned char target_bucket = (src >> ((sizeof(unsigned long long) - 1) * 8 - ix)) & 255;
                 int target_offset = offsets[target_bucket] - counts[target_bucket];
                 counts[target_bucket]--;
                 data[src_offset] = data[target_offset];
@@ -67,7 +67,7 @@ radixsort_tail_ull(unsigned long long *data, int n, int ix) {
 
         offset = 0;
         for (i = 0; i < 256; i++) {
-            radixsort_tail_ull(data + offset, offsets[i] - offset, ix + 1);
+            radixsort_tail_ull(data + offset, offsets[i] - offset, ix + 8);
             offset = offsets[i];
         }
     }
@@ -116,7 +116,7 @@ logixsort_ull(unsigned long long *data, unsigned int n) {
     offset = 0;
     for (i = LBUCKETS; i > 0; ) {
         i--;
-        radixsort_tail_ull(data + offset, offsets[i] - offset, i / 8);
+        radixsort_tail_ull(data + offset, offsets[i] - offset, (i / 8) * 8);
         offset = offsets[i];
     }
 }
