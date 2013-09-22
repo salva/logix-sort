@@ -31,7 +31,7 @@ insertion_sort_ull(unsigned long long *data, int n) {
 
 static void
 radixsort_tail_ull(unsigned long long *data, int n, int ix) {
-    if (ix >= sizeof(unsigned long long) * 8)
+    if (ix >= sizeof(unsigned long long))
         return;
 
     if (n > CUTOFF) {
